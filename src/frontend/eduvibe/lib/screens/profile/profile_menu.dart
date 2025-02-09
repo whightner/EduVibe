@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../auth_service.dart';
+import '../login_screen.dart';
 import 'edit_profile_screen.dart';
 import 'settings_screen.dart';
 
@@ -8,60 +10,55 @@ class ProfileMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
-      icon: const Icon(Icons.person, size: 30),  // Simple person icon
+      icon: const Icon(Icons.person, size: 30),
       onSelected: (value) {
         if (value == 0) {
-          _showEditProfile(context);
+          // Navigate to Edit Profile
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+          );
         } else if (value == 1) {
-          _showSettings(context);
+          // Navigate to Settings
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SettingsScreen()),
+          );
         } else if (value == 2) {
           _logout(context);
         }
       },
       itemBuilder: (context) => [
-        PopupMenuItem(
+        const PopupMenuItem(
           value: 0,
           child: ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text("Edit Profile"),
+            leading: Icon(Icons.person),
+            title: Text("Edit Profile"),
           ),
         ),
-        PopupMenuItem(
+        const PopupMenuItem(
           value: 1,
           child: ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text("Settings"),
+            leading: Icon(Icons.settings),
+            title: Text("Settings"),
           ),
         ),
-        PopupMenuItem(
+        const PopupMenuItem(
           value: 2,
           child: ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text("Logout"),
+            leading: Icon(Icons.logout),
+            title: Text("Logout"),
           ),
         ),
       ],
     );
   }
 
-  void _showEditProfile(BuildContext context) {
-    Navigator.push(
+  void _logout(BuildContext context) async {
+    await AuthService().signOut();
+    Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+      MaterialPageRoute(builder: (context) => LoginScreen()),
     );
-  }
-
-  void _showSettings(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SettingsScreen()),
-    );
-  }
-
-  void _logout(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Logged out successfully")),
-    );
-    // Implement actual logout functionality (e.g., Firebase, session management)
   }
 }

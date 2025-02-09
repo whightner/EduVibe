@@ -10,7 +10,6 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -18,49 +17,34 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    Center(child: Text("🏠 Home", style: TextStyle(fontSize: 24))),
+    Center(child: Text("🏠 Accueil", style: TextStyle(fontSize: 24))),
     const CoursesScreen(),
     const AssignmentsScreen(),
     const CommunityScreen(),
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    setState(() => _selectedIndex = index);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("EduVibe"),
-        actions: [
-          ProfileMenu(), // Profile dropdown menu
-        ],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(56),
+        child: AppBar(
+          title: const Text("EduVibe"),
+          actions: [ProfileMenu()],
+        ),
       ),
-      body: Stack(
-        children: [
-          // Main content body
-          _screens[_selectedIndex],
-
-          // Chat Icon at the bottom before the BottomNav
-          Positioned(
-            bottom: 80,  // You can adjust this value to fit your design
-            right: 20,   // Adjust the right positioning
-            child: FloatingActionButton(
-              onPressed: () {
-                // Navigate to chat screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ChatScreen()),
-                );
-              },
-              backgroundColor: Colors.blue,
-              child: const Icon(Icons.chat), // Change color as needed
-            ),
-          ),
-        ],
+      body: IndexedStack(index: _selectedIndex, children: _screens),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatScreen()),
+        ),
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.chat),
       ),
       bottomNavigationBar: BottomNav(
         selectedIndex: _selectedIndex,
